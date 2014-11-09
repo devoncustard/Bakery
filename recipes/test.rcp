@@ -1,0 +1,1 @@
+Write-Output "Hello"| out-file -encoding ascii c:\joe.txt;

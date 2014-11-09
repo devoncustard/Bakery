@@ -1,0 +1,32 @@
+invoke-command -session $session {	Write-Output "ipmo pswindowsupdate"  | out-file -encoding ascii c:\p.ps1;
+	Write-Output "get-wuinstall -Title '.NET Framework 4.5.1' -AcceptAll -IgnoreUserInput -IgnoreReboot |out-file c:\pass1.log"  | out-file -encoding ascii -append c:\p.ps1
+};
+invoke-command -session $session {	import-module pswindowsupdate;	$h=hostname; invoke-wuinstall -computername $h -script {c:\p.ps1} -taskname "pass1"} ;
+
+#Interogate remote servers task scheduler to see if job ran and ran successfully
+do 
+{
+	"Update task status is " ;
+	SchedTaskStatus "pass1" $username $password $ip
+	start-sleep -s 240
+}
+while ("Running" -eq (SchedTaskStatus "pass1" $username $password $ip) );
+
+if ("0" -NE (SchedtaskResult "pass1" $username $password $ip) )
+{
+	"Windows Update on host $hostname did not exit cleanly"
+	Exit
+};
+"2nd pass"
+invoke-command -session $session {import-module pswindowsupdate;$script={ipmo pswindowsupdate;get-wuinstall -Title '.NET Framework 4.5.1' -AcceptAll -IgnoreUserInput -IgnoreReboot |out-file c:\pass2.log}; $h=hostname;invoke-wuinstall -computername $h -script $script -taskname "pass2"};
+do 
+{
+	"Update task status is " ;	SchedTaskStatus  "pass2" $username $password $ip
+	start-sleep -s 240
+}
+while ("Running" -eq (SchedTaskStatus "pass2" $username $password $ip) );
+if ((SchedtaskResult "pass2" $username $password $ip) -NE "0")
+{
+	"Windows Update on host $hostname did not exit cleanly"
+	Exit
+}

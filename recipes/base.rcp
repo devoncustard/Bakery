@@ -1,0 +1,21 @@
+invoke-command -session $session {import-module pswindowsupdate;$script={ipmo pswindowsupdate;get-wuinstall -Category 'Critical Updates','Security Update' -AcceptAll -IgnoreUserInput -IgnoreReboot |out-file c:\updates.log}; $h=hostname;invoke-wuinstall -computername $h -script $script};
+#Interogate remote servers task scheduler to see if job ran and ran successfully
+do 
+{
+	"Update task status is " ;	SchedTaskStatus "PSWindowsUpdate" $username $password $ip
+	start-sleep -s 30
+}
+while ("Running" -eq (SchedTaskStatus  "PSWindowsUpdate" $username $password $ip) );
+schtasks /query /tn "PSWindowsUpdate" /fo CSV /v /s:$ip /HRESULT /u:$username /p:$password| out-file ".\x.csv";
+$csv=import-csv ".\x.csv";
+if ($csv."Last Result" -EQ "0")
+{
+	Write-Output "Restarting instance"
+	restart-computer -computername $ip -credential $cred -wait -for  WinRM -Force
+
+}
+else
+{
+	"Windows Update on host $hostname did not exit cleanly"
+	Exit
+};
