@@ -1,9 +1,7 @@
-param([string]$Provider,[string]$ImageName,[string]$ImageType)
+param([int]$Provider,[string]$CommonName,[string]$ImageType)
 
 #For testing
-$Provider=1
-$ImageName="blahblah"
-$ImageType=1
+
 
 
 Add-Type @"
@@ -12,5 +10,5 @@ using System;public class ImageRequest{ public string CommonName {get;set;}publi
 
 
 
-$r=invoke-restmethod -URI "http://localhost:65316/api/image/?CommonName=${ImageName}&ImageType=${ImageType}&Provider=${Provider}" -Method Get
+$r=invoke-restmethod -URI "http://webbake/bakery/api/image/?CommonName=${CommonName}&ImageType=${ImageType}&Provider=${Provider}" -Method Get
 $r

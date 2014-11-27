@@ -1,0 +1,13 @@
+C:\Dropbox\Code\BakeryMonitor-MVC\BakeryMonitor-MVC\bin\Debug\BakeryMonitor-MVC.exe.config
+C:\Dropbox\Code\BakeryMonitor-MVC\BakeryMonitor-MVC\bin\Debug\BakeryMonitor-MVC.exe
+C:\Dropbox\Code\BakeryMonitor-MVC\BakeryMonitor-MVC\bin\Debug\BakeryMonitor-MVC.pdb
+C:\Dropbox\Code\BakeryMonitor-MVC\BakeryMonitor-MVC\bin\Debug\ObjectListView.dll
+C:\Dropbox\Code\BakeryMonitor-MVC\BakeryMonitor-MVC\obj\Debug\BakeryMonitor-MVC.csprojResolveAssemblyReference.cache
+C:\Dropbox\Code\BakeryMonitor-MVC\BakeryMonitor-MVC\obj\Debug\BakeryMonitor_MVC.Properties.Resources.resources
+C:\Dropbox\Code\BakeryMonitor-MVC\BakeryMonitor-MVC\obj\Debug\BakeryMonitor_MVC.frmMain.resources
+C:\Dropbox\Code\BakeryMonitor-MVC\BakeryMonitor-MVC\obj\Debug\BakeryMonitor-MVC.csproj.GenerateResource.Cache
+C:\Dropbox\Code\BakeryMonitor-MVC\BakeryMonitor-MVC\obj\Debug\BakeryMonitor-MVC.exe
+C:\Dropbox\Code\BakeryMonitor-MVC\BakeryMonitor-MVC\obj\Debug\BakeryMonitor-MVC.pdb
+D:\github\BakeryMonitor-MVC\BakeryMonitor-MVC\bin\Debug\BakeryMonitor-MVC.exe.config
+D:\github\BakeryMonitor-MVC\BakeryMonitor-MVC\obj\Debug\BakeryMonitor-MVC.exe
+D:\github\BakeryMonitor-MVC\BakeryMonitor-MVC\obj\Debug\BakeryMonitor-MVC.pdb
