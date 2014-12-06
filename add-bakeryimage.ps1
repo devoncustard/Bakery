@@ -1,16 +1,8 @@
-param([string]$id,[string]$location,[string]$commonname,[int]$imagetype,[int]$provider,[int]$os,[string]$version)
+param([string]$id,[string]$desc,[string]$location,[string]$commonname,[int]$imagetype,[int]$provider,[int]$osfamily,[string]$osversion,[string]$user,[string]$pass)
 
-# test parameters
-$id=[Guid]::NewGuid().ToString().Replace("-","")
-$desc="test desc"
-$location="anywhere"
-$commonname="blahblah"
-$imagetype=1
 $bakedon=get-date
-$provider=1
-$osfamily=1
-$osversion="2008R2"
-
+$id
+$base64AuthInfo=[Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes(("{0}:{1}" -f $user,$pass)))
 $body=@{
 	Id=$id
 	Description=$desc
@@ -24,4 +16,6 @@ $body=@{
 	}
 
 
-invoke-restmethod http://localhost:65316/api/image -Method Post -Body $body
+invoke-restmethod http://webbake/bakery/api/image -Method Post -Body $body -Headers @{Authorization=("Basic {0}" -f $base64AuthInfo)}
+#invoke-restmethod http://localhost:65316/api/image -Method Post -Body $body
+

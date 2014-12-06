@@ -20,7 +20,7 @@ function ACPIShutdownESX()
 
 switch ($provider)
 {
-    "VAG" { ACPIShutdownVAG $identifier}
+   1 { ACPIShutdownVAG $identifier}
     "AWS" { ACPIShutdownAWS $identifier}
     "ESX" { ACPIShutdownESX $identifier}
 	

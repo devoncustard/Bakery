@@ -1,4 +1,4 @@
-$instancename="dan"
+$instancename="W2008R2-Base-x"
 $puppet="puppet8.mojo.local"
 $domain="mojo.local"
 $environment="mojo"

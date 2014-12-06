@@ -82,7 +82,7 @@ $identifier=""
 
 switch ($provider)
 {
-    "VAG" { $identifier=CreateInstanceVAG -name $name}
+    1 { $identifier=CreateInstanceVAG -name $name}
 	"ESX" { $identifier=CreateInstanceESX}
 	"AWS" { $identifier=CreateInstanceAWS}
 }

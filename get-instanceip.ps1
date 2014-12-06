@@ -32,7 +32,7 @@ function GetInstanceIPESX
 
 switch ($provider)
 {
-    "VAG" { $ip=GetInstanceIPVAG $identifier $ipnetmask;}
+    1 { $ip=GetInstanceIPVAG $identifier $ipnetmask;}
     "ESX" { $ip=GetInstanceIPESX $identifier $ipnetmask;}
     "AWS" { $ip=GetInstanceIPAWS $identifier $ipnetmask;}
 

@@ -23,7 +23,7 @@ $newinstance=""
 #[Guid]::NewGuid().ToString().Replace("-","")
 switch ($provider)
 {
-    "VAG" { $newinstance=ImageInstanceVAG $identifier}
+    1 { $newinstance=ImageInstanceVAG $identifier}
     "AWS" { $newinstance=ImageInstanceAWS $identifier}
     "ESX" { $newinstance=ImageInstanceESX $identifier}
 }

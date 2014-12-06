@@ -12,7 +12,7 @@ function GetStateVAG ()
 $state=""
 switch ($provider)
 {
-	"VAG" { $state=GetStateVAG $identifier}
+	1 { $state=GetStateVAG $identifier}
 	"AWS" {}
 	"ESX" {}
 }

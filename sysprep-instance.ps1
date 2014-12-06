@@ -41,8 +41,8 @@ invoke-command -session $session {
     mkdir c:\windows\setup\scripts > $null;
     }
 
-remotecopytextfiles "d:\bakery\sysprep\${version}\scripts" "c:\windows\setup\scripts" $session
-remotecopytextfiles "d:\bakery\sysprep\${version}\sysprep" "c:\windows\system32\sysprep" $session
+#remotecopytextfiles "d:\github\bakery\sysprep\${version}\scripts" "c:\windows\setup\scripts" $session
+remotecopytextfiles "d:\github\bakery\sysprep\${version}\sysprep" "c:\windows\system32\sysprep" $session
 $sb=[ScriptBlock]::Create("{[Environment]::SetEnvironmentVariable(""BOOTSTRAP"",""${bootstrap}"",""Machine"")}")
 invoke-command -session $session -ScriptBlock $sb
 invoke-command -session $session {cd \windows\system32\sysprep;c:\windows\system32\sysprep\sysprep.exe /oobe /shutdown /generalize /unattend:c:\windows\system32\sysprep\unattend.xml}

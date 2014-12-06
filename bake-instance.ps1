@@ -1,4 +1,4 @@
-param([string]$base_tag,[string]$recipeFile,[string]$outputTag,[string]$os,[string]$version,[string]$netmask,[string]$provider)
+param([string]$base_tag,[string]$recipeFile,[string]$outputTag,[int]$os,[string]$version,[string]$netmask,[int]$provider)
 #$base_tag - name of base image used to construct bakery image - MUST not be a sysprepped image
 #$recipeFile - full path to .rcp file containing recipe scriptblock
 #$outputTag - name of image that will be stored in the bakery database
@@ -10,7 +10,7 @@ $recipe=[IO.File]::ReadAllText($recipeFile)
 
 #get bakery image details
 Write-Host "Getting base image details from repository" -ForegroundColor Magenta
-$imagedetails=get-bakeryimage $provider $base_tag 0
+$imagedetails=get-bakeryimageb $provider $base_tag 1 "Vagrant" "Vag-rant1"
 
 
 # Create and launch instance
@@ -41,7 +41,12 @@ waitforshutdown -provider $provider -identifier $identifier
 $dough=image-instance -identifier $identifier -provider $provider
 #upload 
 Write-Host "Upload image details to repository" -ForegroundColor Magenta
-add-bakeryimage -name $dough -location "http://webbake/${dough}.box" -tag $outputTag -sysprep 0 -provider $provider -os $os -version $version
+$dough
+$outputTag
+$provider
+$os
+$version
+add-bakeryimage -id $dough -location "http://webbake/${dough}.box" -commonname $outputTag -imagetype 1 -provider $provider -osfamily $os -osversion $version -user "Vagrant" -pass "Vag-rant1"
 
 
 # Sysprep image
@@ -52,9 +57,10 @@ Write-Host "Sysprep image" -ForegroundColor Magenta
 sysprep-instance $version $cred $ip
 waitforshutdown $provider $identifier
 # Take final image and upload metadata to database
+
 Write-Host "Take image (and upload where necessary)"  -ForegroundColor Magenta
 $loaf=image-instance $identifier $provider 
-add-bakeryImage -name $loaf -location "http://webbake/${loaf}.box" -tag $outputTag -sysprep 1 -provider $provider -os $os -version $version
+add-bakeryImage -id $loaf -location "http://webbake/${loaf}.box" -commonname $outputTag -imagetype 2 -provider $provider -osfamily $os -osversion $version -user "Vagrant" -pass "Vag-rant1"
 
 #Tidyup
 remove-instance $identifier $provider

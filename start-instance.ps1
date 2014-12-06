@@ -14,7 +14,6 @@ function StartInstanceESX()
 write-host "Starting instance ${instance}" -ForegroundColor Cyan
 switch ($provider)
 {
-    "VAG" { write-host "Using VirtualBox provider" -ForegroundColor Magenta;StartInstanceVAG $identifier
-	}
+    1 { write-host "Using VirtualBox provider" -ForegroundColor Magenta;StartInstanceVAG $identifier}
 }
 
