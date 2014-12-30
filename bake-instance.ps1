@@ -1,4 +1,4 @@
-param([string]$base_tag,[string]$recipeFile,[string]$outputTag,[int]$os,[string]$version,[string]$netmask,[int]$provider)
+param([string]$base_tag,[string]$recipeFile,[string]$outputTag,[int]$osfamily,[string]$osversion,[int]$provider)
 #$base_tag - name of base image used to construct bakery image - MUST not be a sysprepped image
 #$recipeFile - full path to .rcp file containing recipe scriptblock
 #$outputTag - name of image that will be stored in the bakery database
@@ -11,16 +11,14 @@ $recipe=[IO.File]::ReadAllText($recipeFile)
 #get bakery image details
 Write-Host "Getting base image details from repository" -ForegroundColor Magenta
 $imagedetails=get-bakeryimageb $provider $base_tag 1 "Vagrant" "Vag-rant1"
-
-
 # Create and launch instance
 Write-Host "Creating instance" -ForegroundColor Magenta
-$identifier=create-instance -provider $provider -base $base_tag -location $imagedetails['Location']
-$identifier
+$identifier=create-instance -provider $provider -base $base_tag -location $imagedetails.Location
+
 start-instance -provider $provider -identifier $identifier
 
 #get ipaddress
-$ip=get-instanceip -identifier $identifier -ipnetmask $ipnetmask -provider $provider
+$ip=get-instanceip -identifier $identifier -provider $provider
 
 #Establish Credentials to use
 Write-Host "Create credentials" -ForegroundColor Magenta
@@ -41,11 +39,7 @@ waitforshutdown -provider $provider -identifier $identifier
 $dough=image-instance -identifier $identifier -provider $provider
 #upload 
 Write-Host "Upload image details to repository" -ForegroundColor Magenta
-$dough
-$outputTag
-$provider
-$os
-$version
+
 add-bakeryimage -id $dough -location "http://webbake/${dough}.box" -commonname $outputTag -imagetype 1 -provider $provider -osfamily $os -osversion $version -user "Vagrant" -pass "Vag-rant1"
 
 

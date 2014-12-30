@@ -15,7 +15,7 @@ function RemoveInstanceVAG($identifier)
 
 switch ($provider)
 {
-    "VAG" { RemoveInstanceVAG $identifier }
+    1 { RemoveInstanceVAG $identifier }
     "AWS" { RemoveInstanceAWS $identifier }
     "ESX" { RemoveInstanceESX $identifier }
 }

@@ -17,5 +17,5 @@ $body=@{
 
 
 invoke-restmethod http://webbake/bakery/api/image -Method Post -Body $body -Headers @{Authorization=("Basic {0}" -f $base64AuthInfo)}
-#invoke-restmethod http://localhost:65316/api/image -Method Post -Body $body
+
 

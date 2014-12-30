@@ -1,25 +1,16 @@
-﻿param([string]$identifier,[string]$ipnetmask,[string]$provider)
+﻿param([string]$identifier,[string]$provider)
 
 function GetInstanceIPVAG
 {
-	Param([string]$identifier,[string]$ipnetmask)
+	Param([string]$identifier)
 
-	$ip1=vboxmanage guestproperty get $identifier "/VirtualBox/GuestInfo/Net/0/V4/IP"
-	$ip2=vboxmanage guestproperty get $identifier "/VirtualBox/GuestInfo/Net/1/V4/IP"
-	if ($ip1.Contains($ipnetmask))
-	{
-		$ip=$ip1.Replace("Value: ","")
-	}
-	elseif ($ip2.Contains($ipnetmask))
-	{
-		$ip=$ip2.Replace("Value: ","")
-	}
-	else
-	{
-		$ip="none found"
-	}
-		
-	$ip
+    $info=vboxmanage showvminfo $identifier | Select-String -pattern Bridged
+    $info=$info.ToString();
+    $mac=$info.Substring($info.IndexOf("MAC")+5,12);
+    $netid=vboxmanage guestproperty enumerate $identifier | select-string -pattern $mac
+    $netid=$netid.ToString().Split('/')[4];
+    $ip=(vboxmanage guestproperty get $identifier "/VirtualBox/GuestInfo/Net/${netid}/V4/IP").Replace("Value: ","")
+    $ip
 }
 
 function GetInstanceIPAWS
@@ -32,9 +23,9 @@ function GetInstanceIPESX
 
 switch ($provider)
 {
-    1 { $ip=GetInstanceIPVAG $identifier $ipnetmask;}
-    "ESX" { $ip=GetInstanceIPESX $identifier $ipnetmask;}
-    "AWS" { $ip=GetInstanceIPAWS $identifier $ipnetmask;}
+    1 { $ip=GetInstanceIPVAG $identifier}
+    "ESX" { $ip=GetInstanceIPESX $identifier}
+    "AWS" { $ip=GetInstanceIPAWS $identifier}
 
 }
 

@@ -1,0 +1,10 @@
+create-psdrive -name X -path c$ -ip $ip -cred $cred
+new-item -path x:\ -name installers -itemtype directory
+new-item -path x:\installers -name puppetagents -itemtype directory
+copy d:\iso\puppetagents\*.* x:\installers\puppetagents
+new-item -path x:\Windows\system32\WindowsPowerShell\v1.0\Modules -name PSWindowsUpdate -itemtype directory
+copy d:\iso\pswindowsupdate\*.* x:\Windows\system32\WindowsPowerShell\v1.0\Modules\pswindowsupdate
+remove-psdrive -Name X
+
+
+

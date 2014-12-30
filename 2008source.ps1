@@ -3,9 +3,9 @@
 #$recipe_file - full path to .rcp file containing recipe scriptblock
 #$output_tag - name of image that will be stored in the bakery database
 
-$base_tag="W2008R2-Source"
-$recipe_file="d:\github\bakery\recipes\W2008R2-Base.rcp"
-$output_tag="W2008R2-Base"
+$base_tag="W2008R2-Vanilla"
+$recipe_file="d:\github\bakery\recipes\W2008R2-source.rcp"
+$output_tag="W2008R2-Source"
 $os=1
 $version="2008R2"
 $provider="1"

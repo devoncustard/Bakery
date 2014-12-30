@@ -10,6 +10,6 @@ using System;public class ImageRequest{ public string CommonName {get;set;}publi
 
 
 
-$r=invoke-restmethod -URI "http://webbake/bakery/api/image/?CommonName=${CommonName}&ImageType=${ImageType}&Provider=${Provider}" -Method Get
+$r=invoke-restmethod -URI "http://hercules/bakery/api/image/?CommonName=${CommonName}&ImageType=${ImageType}&Provider=${Provider}" -Method Get
 #$r=invoke-restmethod -URI "http://localhost:65316/api/image/?CommonName=${CommonName}&ImageType=${ImageType}&Provider=${Provider}" -Method Get
 $r

@@ -1,0 +1,111 @@
+$session=new-pssession -computername $ip -cred $cred
+$session
+Write-Host "Copy files"
+
+$x=Get-PSDrive| Select-String -pattern X
+[void][System.Console]::ReadKey($true)
+if ($x -ne $null)
+	{
+		remove-psdrive -Name X
+	}
+	
+create-psdrive -name X -path c$ -ip $ip -cred $cred
+new-item -path x:\ -name installers -itemtype directory
+new-item -path x:\installers -name puppetagents -itemtype directory
+copy d:\iso\puppetagents\*.* x:\installers\puppetagents
+new-item -path x:\Windows\system32\WindowsPowerShell\v1.0\Modules -name PSWindowsUpdate -itemtype directory
+copy d:\iso\pswindowsupdate\*.* x:\Windows\system32\WindowsPowerShell\v1.0\Modules\pswindowsupdate
+remove-psdrive -Name X
+[void][System.Console]::ReadKey($true)
+
+Write-Host "First patch pass"
+$script="{import-module pswindowsupdate; invoke-wuinstall -computername ${ip} -verbose -scriptblock {ipmo pswindowsupdate;get-wuinstall -Category 'Critical Updates','Security Update' -AcceptAll -IgnoreUserInput -IgnoreReboot |out-file c:\updates.log}}"
+$sb=[ScriptBlock]::Create($recipe)
+$script
+invoke-command -session $session -script $sb
+[void][System.Console]::ReadKey($true)
+#Interogate remote servers task scheduler to see if job ran and ran successfully
+do 
+{
+	"Update task status is " ;	SchedTaskStatus "PSWindowsUpdate" $username $password $ip
+	start-sleep -s 30
+}
+while ("Running" -eq (SchedTaskStatus  "PSWindowsUpdate" $username $password $ip) );
+schtasks /query /tn "PSWindowsUpdate" /fo CSV /v /s:$ip /HRESULT /u:$username /p:$password| out-file ".\x.csv";
+$csv=import-csv ".\x.csv";
+if ($csv."Last Result" -EQ "0")
+{
+	Write-Output "Restarting instance"
+	restart-computer -computername $ip -credential $cred -wait -for  WinRM -Force
+
+}
+else
+{
+	"Windows Update on host $hostname did not exit cleanly"
+	Exit
+};
+$session.close
+Write-Host "Second patch pass"
+$session=new-pssession -computername $ip -cred $cred
+$script="{import-module pswindowsupdate;invoke-wuinstall -computername $ip -script {ipmo pswindowsupdate;get-wuinstall -Category 'Critical Updates','Security Update' -AcceptAll -IgnoreUserInput -IgnoreReboot |out-file -append c:\updates.log};}";
+$script
+invoke-command -session $session $script;
+#Interogate remote servers task scheduler to see if job ran and ran successfully
+do 
+{
+	"Update task status is " ;	SchedTaskStatus "PSWindowsUpdate" $username $password $ip
+	start-sleep -s 30
+}
+while ("Running" -eq (SchedTaskStatus  "PSWindowsUpdate" $username $password $ip) );
+schtasks /query /tn "PSWindowsUpdate" /fo CSV /v /s:$ip /HRESULT /u:$username /p:$password| out-file ".\x.csv";
+$csv=import-csv ".\x.csv";
+if ($csv."Last Result" -EQ "0")
+{
+	Write-Output "Restarting instance"
+	restart-computer -computername $ip -credential $cred -wait -for  WinRM -Force
+}
+else
+{
+	"Windows Update on host $hostname did not exit cleanly"
+	Exit
+};
+
+$session=new-pssession -computername $ip -cred $cred
+
+Write-Host "Install .Net Framework 4.5.1 updates"
+invoke-command -session $session {import-module pswindowsupdate;$h=hostname;invoke-wuinstall -computername $h -script }{ipmo pswindowsupdate;get-wuinstall -Title '.NET Framework 4.5.1' -AcceptAll -IgnoreUserInput -IgnoreReboot  |out-file  --encoding ascii -append c:\updates.log};
+
+#Interogate remote servers task scheduler to see if job ran and ran successfully
+do 
+{
+	"Update task status is " ;
+	SchedTaskStatus "PSWindowsUpdate" $username $password $ip
+	start-sleep -s 240
+}
+while ("Running" -eq (SchedTaskStatus "PSWindowsUpdate" $username $password $ip) );
+
+if ("0" -NE (SchedtaskResult "PSWindowsUpdate" $username $password $ip) )
+{
+	"Windows Update on host $hostname did not exit cleanly"
+	Exit
+}
+
+Write-Host "Install .Net Framework 4.5.1 2nd pass"
+$session=new-pssession -computername $ip -cred $cred
+invoke-command -session $session {import-module pswindowsupdate;$script={ipmo pswindowsupdate;get-wuinstall -Title '.NET Framework 4.5.1' -AcceptAll -IgnoreUserInput -IgnoreReboot  |out-file  --encoding ascii -append c:\updates.log}; $h=hostname;invoke-wuinstall -computername $h -script $script};
+do 
+{
+	"Update task status is " ;	SchedTaskStatus  "PSWindowsUpdate" $username $password $ip
+	start-sleep -s 30
+}
+while ("Running" -eq (SchedTaskStatus "PSWindowsUpdate" $username $password $ip) );
+if ((SchedtaskResult "PSWindowsUpdate" $username $password $ip) -NE "0")
+{
+	"Windows Update on host $hostname did not exit cleanly"
+	Exit
+}
+
+
+
+
+
